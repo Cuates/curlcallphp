@@ -10,10 +10,10 @@
   */
 
   // Include error check class
-  include ("errorcheckclass.php");
+  include ("checkerrorclass.php");
 
   // Create an object of error check class
-  $errorcheckcl = new errorcheckclass();
+  $checkerrorcl = new checkerrorclass();
 
   // Set variables
   $developerNotify = 'cuates@email.com'; // Production email(s)
