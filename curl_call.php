@@ -29,7 +29,7 @@
 
   // Retrieve any other issues not retrieved by the set_error_handler try/catch
   // Parameters are function name, $email_to, $email_subject, $from_mail, $from_name, $replyto, $email_cc and $email_bcc
-  register_shutdown_function(array($checkerrorcl,'shutdown_notify'), $developerNotify, 'Cron Job ' . $scriptName . ' Error', $fromEmailNotifier, $fromEmailServer, $fromEmailNotifier);
+  register_shutdown_function(array($checkerrorcl,'shutdown_notify'), $developerNotify, $scriptName . ' Error', $fromEmailNotifier, $fromEmailServer, $fromEmailNotifier);
 
   // Function to catch exception errors
   set_error_handler(function ($errno, $errstr, $errfile, $errline)
