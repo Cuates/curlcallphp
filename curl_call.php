@@ -3,7 +3,7 @@
   /*
           File: curl_call.php
        Created: 07/22/2020
-       Updated: 07/22/2020
+       Updated: 07/23/2020
     Programmer: Cuates
     Updated By: Cuates
        Purpose: API CURL call
@@ -322,7 +322,7 @@
           $subjectEndUser = $scriptName . " has been Processed";
 
           // Set the email headers
-          $headersEndUser = "From: " . $fromEmailServer . " <" . $fromEmailNotifier . ">" . "\r\n";
+          $headersEndUser = "From: " . $fromNameEndUser . " <" . $fromEmailEndUser . ">" . "\r\n";
           // $headersEndUser .= "CC: " . $to_cc . "\r\n";
           // $headersEndUser .= "BCC: " . $to_bcc . "\r\n";
           $headersEndUser .= "MIME-Version: 1.0\r\n";
@@ -339,7 +339,7 @@
           <html>
             <head>
               <title>"
-              . $scriptName .
+                . $scriptName .
                 " has been Processed
               </title>
               <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
@@ -356,14 +356,12 @@
 
           // Begin error message
           $messageEndUser .= "<div style=\"text-align: center;\"> " . $scriptName . " " . $filename . " file has been processed.
-                          <br />
-                          <br />
-                          Do not reply, your intended recipient will not receive the message.
-                      </div>";
-
-          // Append the ending message
-          $messageEndUser .= "</body>
-          </html>";
+                    <br />
+                    <br />
+                    Do not reply, your intended recipient will not receive the message.
+                </div>
+              </body>
+            </html>";
 
           // Send email to user for successful POST
           $curl_cl->notifyEndUser($filename, DOWNLOADDIR, $toEndUser, $fromEmailEndUser, $fromNameEndUser, $replyToEndUser, $subjectEndUser, $headersEndUser, $messageEndUser, $to_ccEndUser, $to_bccEndUser, $xPriorityEndUser);
@@ -394,7 +392,7 @@
     $sequenceUpdateResp = reset($sequenceUpdateData);
     $sequenceUpdateMesg = next($sequenceUpdateData);
 
-    // Check if error with registering process
+    // Check if error with updating sequence
     if (trim($sequenceUpdateResp) !== "Success")
     {
       // Append error message
@@ -419,7 +417,7 @@
       $subject = $scriptName . " Error";
 
       // Set the email headers
-      $headers = "From: " . $fromEmailServer . " <" . $fromEmailNotifier . ">" . "\r\n";
+      $headers = "From: " . $fromName . " <" . $fromEmail . ">" . "\r\n";
       // $headers .= "CC: " . $to_cc . "\r\n";
       // $headers .= "BCC: " . $to_bcc . "\r\n";
       $headers .= "MIME-Version: 1.0\r\n";
@@ -435,8 +433,9 @@
       $message = "<!DOCtype html>
       <html>
         <head>
-          <title>
-            Cron Job " . $scriptName . " Error
+          <title>"
+            . $scriptName .
+            " Error
           </title>
           <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />
           <!-- Include next line to use the latest version of IE -->

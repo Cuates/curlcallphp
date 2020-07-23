@@ -5,7 +5,7 @@
        Updated: 07/22/2020
     Programmer: Cuates
     Updated By: Cuates
-       Purpose: Sensitive Database information
+       Purpose: Sensitive information
   */
 
   // Can ONLY be inherited by another class

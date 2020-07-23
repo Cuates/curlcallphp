@@ -2,7 +2,7 @@
   /*
           File: curl_class.php
        Created: 07/22/2020
-       Updated: 07/22/2020
+       Updated: 07/23/2020
     Programmer: Cuates
     Updated By: Cuates
        Purpose: Curl call interaction
@@ -29,7 +29,7 @@
     {
       // This function needs to be here so the class can be executed when called
       // Create object of mail class
-      $this->mcl = new mclass();
+      $this->mcl = new mailclass();
     }
 
     // PHP 4 Style constructor
@@ -140,14 +140,14 @@
     //**---------- Do not modify anything above this commented line ----------**//
 
     // Update sequence
-    public function updateSequence($para01)
+    public function updateSequence($param01)
     {
       // Query
-      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @para01 = :para01";
+      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @param01 = :param01";
 
       // Define values into key pair array
       $params = array(
-        ':para01' => trim($para01)
+        ':param01' => trim($param01)
       );
 
       // Return single attribute from the database
@@ -155,14 +155,14 @@
     }
 
     // Register Data
-    function registerData($para01)
+    function registerData($param01)
     {
       // Query
-      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @para01 = :para01";
+      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @param01 = :param01";
 
       // Define values into key pair array
       $params = array(
-        ':para01' => trim($para01)
+        ':param01' => trim($param01)
       );
 
       // Return single attribute from the database
@@ -170,17 +170,17 @@
     }
 
     // Retrieve data
-    function getData($para01)
+    function getData($param01)
     {
       // Set title array for sat air
       $titleArray = array('Column01', 'Column02', 'Column03');
 
       // Query
-      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @para01 = :para01";
+      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @param01 = :param01";
 
       // Define values into key pair array
       $params = array(
-        ':para01' => trim($para01)
+        ':param01' => trim($param01)
       );
 
       // Return single attribute from the database
@@ -188,14 +188,14 @@
     }
 
     // Extract id
-    function extractIDData($para01)
+    function extractIDData($param01)
     {
       // Query
-      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @para01 = :para01";
+      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @param01 = :param01";
 
       // Define values into key pair array
       $params = array(
-        ':para01' => trim($para01)
+        ':param01' => trim($param01)
       );
 
       // Return single attribute from the database
@@ -203,15 +203,15 @@
     }
 
     // Validate data
-    function validateData($para01, $para02)
+    function validateData($param01, $param02)
     {
       // Query
-      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @para01 = :para01, @para02 = :para02";
+      $query = "<Stored_Procedure_Name> @optionMode = '<Option_Mode_Name>', @param01 = :param01, @param02 = :param02";
 
       // Define values into key pair array
       $params = array(
-        ':para01' => trim($para01),
-        ':para02' => trim($para02)
+        ':param01' => trim($param01),
+        ':param02' => trim($param02)
       );
 
       // Return single attribute from the database
