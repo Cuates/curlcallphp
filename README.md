@@ -1,5 +1,5 @@
 # curlcallphp
-> PHP web service curl call and database interaction
+> PHP curl call and database interaction
 
 ## Table of Contents
 * [Version](#version)
