@@ -231,8 +231,6 @@
     // Call to Generate Access Token
     private function postAuthentication($type = "noType")
     {
-      // curl_call.php
-
       // Initialize variable
       $returnValue = "";
 
@@ -342,8 +340,6 @@
     // Call to put data
     private function postData($jsonString, $accessToken, $type = "noType")
     {
-      // curl_call.php
-
       // Initialize variable
       $returnValue = "";
 
