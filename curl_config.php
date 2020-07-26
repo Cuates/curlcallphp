@@ -2,7 +2,7 @@
   /*
           File: curl_config.php
        Created: 07/22/2020
-       Updated: 07/22/2020
+       Updated: 07/26/2020
     Programmer: Cuates
     Updated By: Cuates
        Purpose: Sensitive information
@@ -22,6 +22,7 @@
     protected $urlapi = NULL;
     protected $remotePath = NULL;
     protected $subscriptionKey = NULL;
+    protected $appKey = NULL;
 
     // PHP 5+ Style constructor
     public function __construct()
@@ -48,8 +49,8 @@
       // Check if server info does not consist of server type
       if(!preg_match("/\b[a-zA-Z0-9(\W)(\_)(\s)]{0,}" . implode('|', $ServerType) . "[a-zA-Z0-9(\W)(\_)(\s)]{0,}\b/i", $ServerInfo))
       {
-        // Set production database information
-        // Check if type is ms sql
+        // Set production information
+        // Check if type is given
         if($type === "<Database_Name>")
         {
           // Set variables
@@ -63,6 +64,22 @@
           $this->urlapi = "";
           $this->remotePath = "";
           $this->subscriptionKey = "";
+          $this->appKey = "";
+        }
+        else if ($type === "<SFTP_Name>")
+        {
+          // Set variables
+          $this->driver = "";
+          $this->servername = "<Production_SFTP_Server_Name>";
+          $this->port = "<Production_SFTP_Port_Number>";
+          $this->database = "";
+          $this->username = "<Username>";
+          $this->password = "<Password>";
+          $this->url = "";
+          $this->urlapi = "";
+          $this->remotePath = "<Directory_Path_In_SFTP_Server>";
+          $this->subscriptionKey = "";
+          $this->appKey = "";
         }
         else if ($type === "<Web_Service_Authentication>")
         {
@@ -77,6 +94,7 @@
           $this->urlapi = "<Production_Web_Service_URL_API_Call>"; // (e.g. auth/login/)
           $this->remotePath = "";
           $this->subscriptionKey = "";
+          $this->appKey = "";
         }
         else if ($type === "<Web_Service_Post>")
         {
@@ -91,6 +109,7 @@
           $this->urlapi = "<Production_Web_Service_Update_URL_API_Call>"; // (e.g. post/data/)
           $this->remotePath = "";
           $this->subscriptionKey = "<Subscription_Key>";
+          $this->appKey = "";
         }
         else
         {
@@ -105,12 +124,13 @@
           $this->urlapi = "";
           $this->remotePath = "";
           $this->subscriptionKey = "";
+          $this->appKey = "";
         }
       }
       else
       {
-        // Else set development database information
-        // Check if type is ms sql
+        // Set development information
+        // Check if type is given
         if($type === "<Database_Name>")
         {
           // Set variables
@@ -124,6 +144,22 @@
           $this->urlapi = "";
           $this->remotePath = "";
           $this->subscriptionKey = "";
+          $this->appKey = "";
+        }
+        else if ($type === "<SFTP_Name>")
+        {
+          // Set variables
+          $this->driver = "";
+          $this->servername = "<Development_SFTP_Server_Name>";
+          $this->port = "<Development_SFTP_Port_Number>";
+          $this->database = "";
+          $this->username = "<Username>";
+          $this->password = "<Password>";
+          $this->url = "";
+          $this->urlapi = "";
+          $this->remotePath = "<Directory_Path_In_SFTP_Server>";
+          $this->subscriptionKey = "";
+          $this->appKey = "";
         }
         else if ($type === "<Web_Service_Authentication>")
         {
@@ -138,6 +174,7 @@
           $this->urlapi = "<Development_Web_Service_URL_API_Call>"; // (e.g. auth/login/)
           $this->remotePath = "";
           $this->subscriptionKey = "";
+          $this->appKey = "";
         }
         else if ($type === "<Web_Service_Post>")
         {
@@ -152,6 +189,7 @@
           $this->urlapi = "<Development_Web_Service_Update_URL_API_Call>"; // (e.g. post/data/)
           $this->remotePath = "";
           $this->subscriptionKey = "<Subscription_Key>";
+          $this->appKey = "";
         }
         else
         {
@@ -166,6 +204,7 @@
           $this->urlapi = "";
           $this->remotePath = "";
           $this->subscriptionKey = "";
+          $this->appKey = "";
         }
       }
     }
@@ -174,7 +213,7 @@
     protected function getConfigVars()
     {
       // Return array of variables
-      return array("Driver" => $this->driver, "Servername" => $this->servername, "Port" => $this->port, "Database" => $this->database, "Username" => $this->username, "Password" => $this->password, "URL" => $this->url, "URLAPI" => $this->urlapi, "RemotePath" => $this->remotePath, "SubscriptionKey" => $this->subscriptionKey);
+      return array("Driver" => $this->driver, "Servername" => $this->servername, "Port" => $this->port, "Database" => $this->database, "Username" => $this->username, "Password" => $this->password, "URL" => $this->url, "URLAPI" => $this->urlapi, "RemotePath" => $this->remotePath, "SubscriptionKey" => $this->subscriptionKey, "AppKey" => $this->appKey);
     }
   }
 ?>

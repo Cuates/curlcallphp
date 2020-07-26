@@ -2,7 +2,7 @@
   /*
           File: curl_class.php
        Created: 07/22/2020
-       Updated: 07/23/2020
+       Updated: 07/26/2020
     Programmer: Cuates
     Updated By: Cuates
        Purpose: Curl call interaction
@@ -39,8 +39,7 @@
       self::__construct();
     }
 
-    // Set this function to private so public users cannot use this file
-    // Create an database/SFTP open function, for the function calls can connect to the database/SFTP
+    // Open connection function to an internal or external server
     private function openConnection($type = "notype")
     {
       // Set variable
@@ -66,6 +65,7 @@
         $this->URLAPI = next($conVars); // URL API
         $this->RemotePath = next($conVars); // Remote directory
         $this->subscriptionKey = next($conVars); // Subscription Key
+        $this->appKey = next($conVars); // App Key
 
         // Check database name. The data Name is set to make sure that we are connecting with a database
         if(preg_match('/<Database_Name>[a-zA-Z]{1,}/i', $type))
@@ -79,7 +79,7 @@
           // This will help when the database returns a hard error
           $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
-        else if(preg_match('/^SFTP$/i', $type))
+        else if(preg_match('/^<SFTP_Name>$/i', $type))
         {
           // Create an object with connection
           $this->sftp = new \phpseclib\Net\SFTP($this->Server, $this->Port);
@@ -98,10 +98,13 @@
             // error_log(print_r($returnArray, true));
           }
         }
+        else if(preg_match('/<Web_Service_>[a-zA-Z]{1,}/i', $type))
+        {
+        }
         else
         {
           // Set message
-          $returnArray = array('SError' => trim('Cannot connect to the database/SFTP'));
+          $returnArray = array('SError' => trim('Cannot connect to the database/SFTP/Web Service'));
 
           // Error log database connection error
           // error_log(print_r($returnArray, true));
@@ -124,7 +127,7 @@
       {
         // Catch the error from the try section of code
         // Set message
-        $returnArray = array('SError' => trim('Caught - cannot connect to the database/SFTP - ' . $e->getMessage()));
+        $returnArray = array('SError' => trim('Caught - cannot connect to the database/SFTP/Web Service - ' . $e->getMessage()));
 
         // Error log database connection error
         // error_log(print_r($returnArray, true));
@@ -242,72 +245,75 @@
       // Try to execute the following CURL call
       try
       {
-        // Set variables with database settings
-        $this->setConfigVars($type);
+        // Set array
+        $connectionStatus = array();
 
-        // Set array to variable
-        $conVars = $this->getConfigVars();
+        // Connect to server
+        $connectionStatus = $this->openConnection($type);
 
-        // Initializing the parameters with their values
-        $this->Driver = reset($conVars); // Driver
-        $this->Server = next($conVars); // Server name
-        $this->Port = next($conVars); // Server Port
-        $this->Database = next($conVars); // Database name
-        $this->User = next($conVars); // Username
-        $this->Pass = next($conVars); // Password
-        $this->URL = next($conVars); // URL
-        $this->URLAPI = next($conVars); // URL API
-        $this->RemotePath = next($conVars); // Remote Path directory
-        $this->subscriptionKey = next($conVars); // Subscription Key
-
-        // Setup the url query string intended for this call
-        $urlQueryString = "";
-        $urlQueryString .= $this->URL . $this->URLAPI;
-
-        // Initialize the curl call
-        $ch = curl_init();
-
-        // Set up the headers to be sent with the information in the curl call
-        $headers = array(
-          'Content-Type: application/x-www-form-urlencoded',
-          'Authorization: Basic ' . $this->Pass
-        );
-
-        // Payload to be sent to the server for access token value
-        $payload = 'grant_type=client_credentials';
-
-        // Set curl option calls
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // curl_setopt($ch, CURLOPT_VERBOSE, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSLVERSION, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        curl_setopt($ch, CURLOPT_URL, $urlQueryString);
-
-        // Execute the curl call
-        $result = curl_exec($ch);
-
-        // Retrieve any curl errors
-        $ch_error = curl_error($ch);
-
-        // Close curl
-        curl_close($ch);
-
-        // Check if there were any errors when executing the curl call
-        if ($ch_error)
+        // Check if error with connecting to server
+        if (!isset($connectionStatus['SError']) && !array_key_exists('SError', $connectionStatus))
         {
-          // Return message
-          $returnValue = trim("Error~" . $ch_error);
+          // Setup the url query string intended for this call
+          $urlQueryString = "";
+          $urlQueryString .= $this->URL . $this->URLAPI;
+
+          // Initialize the curl call
+          $ch = curl_init();
+
+          // Set up the headers to be sent with the information in the curl call
+          $headers = array(
+            'Content-Type: application/x-www-form-urlencoded',
+            'Authorization: Basic ' . $this->Pass
+          );
+
+          // Payload to be sent to the server for access token value
+          $payload = 'grant_type=client_credentials';
+
+          // Set curl option calls
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+          // curl_setopt($ch, CURLOPT_VERBOSE, 1);
+          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+          curl_setopt($ch, CURLOPT_SSLVERSION, 1);
+          curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+          curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+          curl_setopt($ch, CURLOPT_URL, $urlQueryString);
+
+          // Execute the curl call
+          $result = curl_exec($ch);
+
+          // Retrieve any curl errors
+          $ch_error = curl_error($ch);
+
+          // Close curl
+          curl_close($ch);
+
+          // Check if there were any errors when executing the curl call
+          if ($ch_error)
+          {
+            // Return message
+            $returnValue = trim("Error~" . $ch_error);
+          }
+          else
+          {
+            //error_log($result);
+
+            // Return message
+            $returnValue = trim("Success~" . $result);
+          }
         }
         else
         {
-          //error_log($result);
+          // Else error has occurred
+          $connectionServerMesg = reset($connectionStatus);
 
-          // Return message
-          $returnValue = trim("Success~" . $result);
+          // Set message
+          $returnValue = trim('SError~' . $connectionServerMesg);
+
+          // Display message
+          // error_log($returnValue);
         }
       }
       catch(Exception $e)
@@ -315,7 +321,7 @@
         // Catch the error from the try section of code
 
         // Set message
-        $returnValue = trim('Error~Unable to perform the post Authentication Curl call ' . $e->getMessage());
+        $returnValue = trim('SError~Caught post Authentication Curl call ' . $e->getMessage());
 
         // error log the caught exception
         // error_log($e->getMessage());
@@ -350,73 +356,76 @@
       // Try to execute the following CURL call
       try
       {
-        // Set variables with database settings
-        $this->setConfigVars($type);
+        // Set array
+        $connectionStatus = array();
 
-        // Set array to variable
-        $conVars = $this->getConfigVars();
+        // Connect to server
+        $connectionStatus = $this->openConnection($type);
 
-        // Initializing the parameters with their values
-        $this->Driver = reset($conVars); // Driver
-        $this->Server = next($conVars); // Server name
-        $this->Port = next($conVars); // Server Port
-        $this->Database = next($conVars); // Database name
-        $this->User = next($conVars); // Username
-        $this->Pass = next($conVars); // Password
-        $this->URL = next($conVars); // URL
-        $this->URLAPI = next($conVars); // URL API
-        $this->RemotePath = next($conVars); // Remote Path directory
-        $this->subscriptionKey = next($conVars); // Subscription Key
-
-        // Setup the url query string intended for this call
-        $urlQueryString = "";
-        $urlQueryString .= $this->URL . $this->URLAPI;
-
-        // Initialize the curl call
-        $ch = curl_init();
-
-        // Set up the headers to be sent with the information in the curl call
-        $headers = array(
-          'Subscription-Key: ' . $this->subscriptionKey,
-          'Authorization: Bearer ' . $accessToken,
-          'Content-Type: application/json',
-          'Accept: application/json'
-        );
-
-        // Set payload string
-        $payload = $jsonString;
-
-        // Set curl option calls
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // curl_setopt($ch, CURLOPT_VERBOSE, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSLVERSION, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        curl_setopt($ch, CURLOPT_URL, $urlQueryString);
-
-        // Execute the curl call
-        $result = curl_exec($ch);
-
-        // Retrieve any curl errors
-        $ch_error = curl_error($ch);
-
-        // Close curl
-        curl_close($ch);
-
-        // Check if there were any errors when executing the curl call
-        if ($ch_error)
+        // Check if error with connecting to server
+        if (!isset($connectionStatus['SError']) && !array_key_exists('SError', $connectionStatus))
         {
-          // Return message
-          $returnValue = trim("Error~" . $ch_error);
+          // Setup the url query string intended for this call
+          $urlQueryString = "";
+          $urlQueryString .= $this->URL . $this->URLAPI;
+
+          // Initialize the curl call
+          $ch = curl_init();
+
+          // Set up the headers to be sent with the information in the curl call
+          $headers = array(
+            'Subscription-Key: ' . $this->subscriptionKey,
+            'Authorization: Bearer ' . $accessToken,
+            'Content-Type: application/json',
+            'Accept: application/json'
+          );
+
+          // Set payload string
+          $payload = $jsonString;
+
+          // Set curl option calls
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+          // curl_setopt($ch, CURLOPT_VERBOSE, 1);
+          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+          curl_setopt($ch, CURLOPT_SSLVERSION, 1);
+          curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+          curl_setopt($ch, CURLOPT_POST, 1);
+          curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+          curl_setopt($ch, CURLOPT_URL, $urlQueryString);
+
+          // Execute the curl call
+          $result = curl_exec($ch);
+
+          // Retrieve any curl errors
+          $ch_error = curl_error($ch);
+
+          // Close curl
+          curl_close($ch);
+
+          // Check if there were any errors when executing the curl call
+          if ($ch_error)
+          {
+            // Return message
+            $returnValue = trim("Error~" . $ch_error);
+          }
+          else
+          {
+            // Return message
+            $returnValue = trim("Success~" . $result);
+          }
         }
         else
         {
-          // Return message
-          $returnValue = trim("Success~" . $result);
+          // Else error has occurred
+          $connectionServerMesg = reset($connectionStatus);
+
+          // Set message
+          $returnValue = trim('SError~' . $connectionServerMesg);
+
+          // Display message
+          // error_log($returnValue);
         }
       }
       catch(Exception $e)
@@ -424,7 +433,7 @@
         // Catch the error from the try section of code
 
         // Set message
-        $returnValue = trim('Error~Unable to perform the post data Curl call ' . $e->getMessage());
+        $returnValue = trim('SError~Caught post data Curl call ' . $e->getMessage());
 
         // error log the caught exception
         // error_log($e->getMessage());
